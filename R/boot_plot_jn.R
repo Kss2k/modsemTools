@@ -156,6 +156,14 @@ boot_plot_jn <- function(x, z, y, model, boot, min_z = -3, max_z = 3, detail = 1
     }
   }
 
+  # R CMD check complains that these don't have visible bindings
+  # (They are lazily evaluated in df_plot)
+  slope <- NULL
+  lower_all <- NULL
+  upper_all <- NULL
+  Significance <- NULL
+  run_id <- NULL
+
   # plot (mirror plot_jn styling)
   p <- ggplot2::ggplot(df_plot, ggplot2::aes(x = z, y = slope)) +
     ggplot2::geom_ribbon(
