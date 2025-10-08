@@ -43,6 +43,7 @@ boot_plot_jn <- function(x, z, y, model, boot, min_z = -3, max_z = 3, detail = 1
   else              parTable <- modsem::parameter_estimates(model)
 
   parTable <- getMissingLabels(parTable)
+  coefs    <- modsem::modsem_coef(model)
 
   # interaction labels (support reversed naming and non-lavaan engines)
   xz <- paste(x, z, sep = ":")
@@ -66,8 +67,14 @@ boot_plot_jn <- function(x, z, y, model, boot, min_z = -3, max_z = 3, detail = 1
   getBootCoefs <- \(lab)
     if (lab %in% colnames(boot)) boot[, lab] else rep(0, NROW(boot))
 
+  getEstCoefs <- \(lab)
+    if (lab %in% names(coefs)) coefs[[lab]] else 0
+
   Bx  <- getBootCoefs(labx)
   Bxz <- getBootCoefs(labxz)
+
+  bx  <- getEstCoefs(labx)
+  bxz <- getEstCoefs(labxz)
 
   # z mean/sd and plotting window (match plot_jn semantics)
   mean_z <- getMean(z, parTable = parTable)
@@ -77,12 +84,12 @@ boot_plot_jn <- function(x, z, y, model, boot, min_z = -3, max_z = 3, detail = 1
 
   # grid in absolute z-scale used everywhere below
   valsz <- seq(min_z_abs, max_z_abs, length.out = detail)
+  bxGivenZ <- bx + bxz * valsz # point/scalar estimates
 
   # Confidence interval computation
-  CI <- data.frame(betax = NA_real_, betax.lower = NA_real_, betax.upper = NA_real_, z = valsz)
+  CI <- data.frame(betax = bxGivenZ, betax.lower = NA_real_, betax.upper = NA_real_, z = valsz)
   for (i in seq_len(detail)) {
-    BxGivenZ <- Bx + Bxz * valsz[i]
-    CI[i, "betax"]       <- mean(BxGivenZ, na.rm = TRUE)
+    BxGivenZ <- Bx + Bxz * valsz[i] # bootstrap estimates
     CI[i, "betax.lower"] <- stats::quantile(BxGivenZ, probs = lower.quantile, na.rm = TRUE)
     CI[i, "betax.upper"] <- stats::quantile(BxGivenZ, probs = upper.quantile, na.rm = TRUE)
   }
