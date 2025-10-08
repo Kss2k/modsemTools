@@ -1,4 +1,4 @@
-# modsemTools
+# `modsemTools` <img src="man/figures/modsemTools.png" alt="Logo" align = "right" height="139" class="logo">
 [![Tests](https://github.com/Kss2k/modsemTools/actions/workflows/tests.yml/badge.svg)](https://github.com/Kss2k/modsemTools/actions/workflows/tests.yml)
 [![R-CMD-CHECK](https://github.com/Kss2k/modsemTools/actions/workflows/checks.yml/badge.svg)](https://github.com/Kss2k/modsemTools/actions/workflows/checks.yml)
 [![GitHub Clones](https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/Kss2k/f2dd3d22af6a9df290c3e4d48da1155b/raw/clone.json&logo=github)](https://github.com/MShawon/github-clone-count-badge)
