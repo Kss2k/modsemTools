@@ -116,7 +116,7 @@ modsem_boot_ci <- function(est, boot, type = c("percent", "bc")) {
                    nrow = length(bX),
                    dimnames = list(names(bX), header))
 
-  FUN <- if (type == "percent") BC_CI else P_CI
+  FUN <- if (type == "percent") P_CI else BC_CI
 
   for (j in seq_len(length(bX)))
     BOOTCI[j,] <- FUN(est, boot, j)
