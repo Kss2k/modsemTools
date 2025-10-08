@@ -53,5 +53,6 @@ jobs:
           _R_CHECK_LENGTH_1_CONDITION_: "TRUE"
           _R_CHECK_LENGTH_1_LOGIC2_: "TRUE"
         run: |
+          install.packages("modsem") # always install latest GitHub version
           options(warnPartialMatchDollar = TRUE)
           devtools::test(stop_on_failure = TRUE)

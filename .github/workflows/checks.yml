@@ -46,4 +46,5 @@ jobs:
           # Optional: make remote fetches quieter/robuster during check
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          install.packages("modsem") # always install latest GitHub version
           devtools::check(error_on = "warning")
