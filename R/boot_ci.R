@@ -12,7 +12,7 @@ BC_CI <- function(est, boot, i) {
   probs_hi2 = stats::pnorm(2*zX+stats::qnorm(0.975))
   probs_hi3 = stats::pnorm(2*zX+stats::qnorm(0.995))
   CI <- append(stats::quantile(abX, probs = c(probs_lo3, probs_lo2, probs_lo1, probs_hi1, probs_hi2, probs_hi3)), estX, after=3)
-  # Bias-Corrected p-value # 
+  # Bias-Corrected p-value #
   if ((estX>0 & min(abX)>0) | (estX<0 & max(abX)<0)) {
     p_value = round(0, digits=4)
   } else if (stats::qnorm(sum(abX>0)/b.no)+2*zX<0) {
@@ -83,7 +83,7 @@ P_CI <- function(est, boot, i) {
 #' @examples
 #' \dontrun{
 #' library(modsem)
-#' 
+#'
 #' m1 <- "
 #'   # Outer Model
 #'   X =~ x1 + x2 +x3
@@ -96,7 +96,7 @@ P_CI <- function(est, boot, i) {
 #'
 #' fit <- modsem(m1, oneInt, method = "lms")
 #' boot <- bootstrap_modsem(fit, R = 250)
-#' 
+#'
 #' ci <- modsem_boot_ci(fit, boot, type = "bc")
 #' print(ci)
 #' }
@@ -131,7 +131,7 @@ modsem_boot_ci <- function(est, boot, type = c("percent", "bc")) {
 #' @export
 print.ModsemBootCi <- function(x, ...) {
   type <- attr(x, "type")
-  
+
   if (type == "percent") cat("Percentile Confidence Intervals:\n")
   else                   cat("Bias-Corrected Confidence Intervals:\n")
 
