@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        r: [ 'release' ]
+        r: [ 'release', 'oldrel', 'devel' ]
 
     steps:
       - name: Check out the repository
@@ -46,5 +46,6 @@ jobs:
           # Optional: make remote fetches quieter/robuster during check
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          options(repos = "https://cran.r-project.org") # download from CRAN
           install.packages("modsem") # always install latest GitHub version
           devtools::check(error_on = "warning")

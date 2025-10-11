@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        r: [ 'release' ]
+        r: [ 'release', 'oldrel', 'devel' ]
 
     steps:
       - name: Check out the repository
@@ -53,6 +53,7 @@ jobs:
           _R_CHECK_LENGTH_1_CONDITION_: "TRUE"
           _R_CHECK_LENGTH_1_LOGIC2_: "TRUE"
         run: |
+          options(repos = "https://cran.r-project.org") # download from CRAN
           install.packages("modsem") # always install latest GitHub version
           options(warnPartialMatchDollar = TRUE)
           devtools::test(stop_on_failure = TRUE)
