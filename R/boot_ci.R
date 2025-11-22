@@ -1,7 +1,7 @@
 # Create Confidence Intervals from Bootstrapped Samples ##
-BC_CI <- function(est, boot, i) {
+BC_CI <- function(est, bX, boot, i) {
   b.no <- nrow(boot)
-  bX <- modsem::modsem_coef(est)  # estimated parameters
+
   estX <- bX[i]
   abX <- boot[,i]
   zX = stats::qnorm(sum(abX<estX)/nrow(boot))  # Bias-Corrected Factor
@@ -12,6 +12,7 @@ BC_CI <- function(est, boot, i) {
   probs_hi2 = stats::pnorm(2*zX+stats::qnorm(0.975))
   probs_hi3 = stats::pnorm(2*zX+stats::qnorm(0.995))
   CI <- append(stats::quantile(abX, probs = c(probs_lo3, probs_lo2, probs_lo1, probs_hi1, probs_hi2, probs_hi3)), estX, after=3)
+
   # Bias-Corrected p-value #
   if ((estX>0 & min(abX)>0) | (estX<0 & max(abX)<0)) {
     p_value = round(0, digits=4)
@@ -20,13 +21,14 @@ BC_CI <- function(est, boot, i) {
   } else {
     p_value = 2*stats::pnorm(-1*(stats::qnorm(sum(abX>0)/b.no)+2*zX))
   }
+
   CI <- append(CI, p_value)
 }
 
 
-P_CI <- function(est, boot, i) {
+P_CI <- function(est, bX, boot, i) {
   b.no <- nrow(boot)
-  bX <- modsem::modsem_coef(est)  # estimated parameters
+
   estX <- bX[i]
   abX <- boot[,i]
   CI <- append(stats::quantile(abX, probs = c(0.005, 0.025, 0.050, 0.950, 0.975, 0.995)), estX, after=3)
@@ -104,22 +106,24 @@ P_CI <- function(est, boot, i) {
 #' @export
 modsem_boot_ci <- function(est, boot, type = c("percent", "bc")) {
   type <- tolower(type)
-  match.arg(type)
+  type <- match.arg(type)
 
-  bX <- modsem::modsem_coef(est)  # estimated parameters
-  element <- 8 * NCOL(boot)
+  bX   <- modsem::modsem_coef(est, type = "all")  # estimated parameters
+  pars <- intersect(names(bX), colnames(boot))
+  bX   <- bX[pars]
+  boot <- boot[, pars, drop = FALSE]
+  element <- 8L * NCOL(boot)
 
   header <- format(c("0.5%","2.5%","5%","Estimate","95%","97.5%","99.5%", "p-value"),
                    justify = "right", width = 9)
 
-  BOOTCI <- matrix(seq_len(element),
-                   nrow = length(bX),
+  BOOTCI <- matrix(seq_len(element), nrow = length(bX),
                    dimnames = list(names(bX), header))
 
   FUN <- if (type == "percent") P_CI else BC_CI
 
   for (j in seq_len(length(bX)))
-    BOOTCI[j,] <- FUN(est, boot, j)
+    BOOTCI[j,] <- FUN(est = est, bX = bX, boot = boot, i = j)
 
   attr(BOOTCI, "type") <- type
   class(BOOTCI) <- "ModsemBootCi"
