@@ -5,6 +5,8 @@ on:
     branches: [ main, test-workflow ]
   pull_request:
     branches: [ main, test-workflow ]
+  schedule:
+    - cron: "0 */24 * * *"
 
 jobs:
   # Native jobs: macOS + Windows + Linux
